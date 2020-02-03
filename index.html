@@ -9,7 +9,66 @@
 <body style="width:100%; height: 100%;">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root" style="width:100%; height: 100%;">
-        <textarea id='graph-input' style="width:50%; height: 150px;"></textarea>
+        <textarea id='graph-input' style="width:50%; height: 150px;">
+{
+  "nodes": [
+    {
+      "id": 0,
+      "label": "Start of EGRESS/SETUP for EV1"
+    },
+    {
+      "id": 1,
+      "label": "Start of EGRESS/SETUP for EV3"
+    },
+    {
+      "id": 2,
+      "label": "End of procedure for EV1"
+    },
+    {
+      "id": 3,
+      "label": "End of procedure for EV3"
+    }
+  ],
+  "edges": [
+    {
+        "source": 0,
+        "target": 2,
+        "minutes": 25,
+        "action": "EV1 performing EGRESS/SETUP"
+    },
+    {
+        "source": 0,
+        "target": 0,
+        "minutes": 0,
+        "action": "EV1 --> EV1 sync offset for EGRESS/SETUP"
+    },
+    {
+        "source": 1,
+        "target": 3,
+        "minutes": 25,
+        "action": "EV3 performing EGRESS/SETUP"
+    },
+    {
+        "source": 1,
+        "target": 0,
+        "minutes": 0,
+        "action": "EV3 --> EV1 sync offset for EGRESS/SETUP"
+    },
+    {
+        "source": 2,
+        "target": 2,
+        "minutes": 0,
+        "action": "EV1 --> EV1 sync offset for procedure end"
+    },
+    {
+        "source": 3,
+        "target": 2,
+        "minutes": 0,
+        "action": "EV3 --> EV1 sync offset for procedure end"
+    }
+  ]
+}
+        </textarea>
         <button id='envisualate'>Create graph</button>
         <svg width="1800" height="900" style="border: solid gray 1px;"></svg>
     </div>
