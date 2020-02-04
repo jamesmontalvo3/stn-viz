@@ -70,6 +70,10 @@
 }
         </textarea>
         <button id='envisualate'>Create graph</button>
+        <button class='cleanup' data-who="EV1">Cleanup EV1</button>
+        <button class='cleanup' data-who="EV2">Cleanup EV2</button>
+        <button class='cleanup' data-who="EV3">Cleanup EV3</button>
+        <button class='cleanup' data-who="EV4">Cleanup EV4</button>
         <svg width="1800" height="900" style="border: solid gray 1px;"></svg>
     </div>
     <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
@@ -84,6 +88,8 @@
                 height = +svg.attr("height"),
                 node,
                 link;
+
+            window.svgSize = { width: width, height: height };
 
             svg.append('defs').append('marker')
                 .attrs({'id':'arrowhead',
@@ -227,8 +233,48 @@
 
             console.log(graph);
             update(graph.edges, graph.nodes);
+            window.graph = graph;
+
+
+            window.padding = 20;
+            window.usefulWidth = window.svgSize.width - 2 * padding;
+            window.usefulHeight = window.svgSize.height - 2 * padding;
+
+            window.y = padding; // start of y
+            window.ySpacing = usefulHeight / (graph.nodes.length - 1)
+
 
         }
+
+
+
+        function setupEv(labelText) {
+            var nodes = graph.nodes.filter((node) => { return node.label.indexOf(labelText) !== -1; });
+            var numWidthEdges = nodes.length - 1;
+            return {
+                spacing: usefulWidth / numWidthEdges,
+                nodes: nodes
+            }
+        }
+
+        function getY() {
+            var was = y;
+            window.y += window.ySpacing
+            return was;
+        }
+
+        function doCleanup(labelText) {
+            const actor = setupEv(labelText);
+
+            actor.nodes.forEach((node, index) => {
+                node.fx = padding + index * actor.spacing;
+                node.fy = getY();
+            })
+        }
+
+        // doit('EV1');
+        // doit('EV2');
+        // doit('EV3');
 
         document.getElementById('envisualate').addEventListener('click', (e) => {
             e.preventDefault();
@@ -236,6 +282,17 @@
             console.log('clicked');
             makeTheGraph();
         });
+
+        var cleanup = document.getElementsByClassName('cleanup');
+
+        for(let i = 0; i < cleanup.length; i++) {
+            cleanup[i].addEventListener("click", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const who = e.target.dataset.who;
+                doCleanup(who);
+            })
+        }
     </script>
 </body>
 </html>
